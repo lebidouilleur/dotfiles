@@ -1,0 +1,74 @@
+#!/usr/bin/env sh
+
+### dotfiles ---                                                -*- mode: sh; -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+
+## You should have received a copy of the GNU General Public License
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+### Commentary:
+
+#
+
+### Code:
+
+
+
+
+# Import our `assert` library.
+source /dev/stdin <<<"$(curl -sLJ https://gist.github.com/lebidouilleur/5ca764167c38d4eda3f13d5a7fbdef9a/raw/6d26f9b268b3d6944e5ed963741f16cd36693b59/assert.sh)"
+
+
+
+function install {
+	if assert_file_exists "$1/makefile"
+	then
+		make -C "$1" install
+	else
+		echo "ERROR: $1: No such directory..."
+		exit 1
+	fi
+}
+
+
+function uninstall {
+	if assert_file_exists "$1/makefile"
+	then
+		make -C "$1" uninstall
+	else
+		echo "ERROR: $1: No such directory..."
+		exit 1
+	fi
+}
+
+
+
+function main {
+	if assert_eq ${#@} 2
+	then
+		case $1 in
+			install) install $2 ;;
+			uninstall) uninstall $2 ;;
+		esac
+	else
+		echo "Usage: dotfiles [install|uninstall] [argument]"
+	fi
+}
+
+
+
+main "$@"
