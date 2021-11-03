@@ -29,11 +29,11 @@
 if assert_eq $SYSTEM macos
 then
     # Add Homebrew paths to $PATH and $MANPATH
-    export PATH="$PATH:/usr/local/bin:/usr/local/sbin"
+    export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
     export MANPATH="$MANPATH:/usr/local/share/man"
 
 
-    if assert_directory_exists /Applications/Xcode.app/
+    if assert_directory_exists "/Applications/Xcode.app/"
     then
        # Add XCode toolchain manuals path to $MANPATH
        export MANPATH="$MANPATH:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man"
