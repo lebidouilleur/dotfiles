@@ -38,4 +38,11 @@ then
        # Add XCode toolchain manuals path to $MANPATH
        export MANPATH="$MANPATH:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man"
     fi
+
+
+    # Add MacTeX utilities to $PATH when installed
+    if assert_directory_exists /Library/TeX/
+    then
+        export PATH="$PATH:/Library/TeX/texbin"
+    fi
 fi
