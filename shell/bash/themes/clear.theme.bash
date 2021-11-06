@@ -25,7 +25,7 @@
 ### Code:
 
 
-BLUE="$TEXT_FORMAT_FOREGROUND_BLUE"
+BLUE="$TEXT_FORMAT_FOREGROUND_LIGHT_BLUE"
 GRAY="$TEXT_FORMAT_FOREGROUND_DARK_GRAY"
 RESET="$TEXT_FORMAT_RESET"
 
@@ -36,8 +36,8 @@ BOLD_RED="$TEXT_FORMAT_BOLD$TEXT_FORMAT_FOREGROUND_LIGHT_RED"
 
 
 
-SH_THEME_PROMPT_VCS_DIRTY="*"
-SH_THEME_PROMPT_VCS_CLEAN=""
+SH_THEME_PROMPT_VCS_DIRTY="•"
+sH_THEME_PROMPT_VCS_CLEAN=""
 SH_THEME_PROMPT_VCS_AHEAD="$BOLD_CYAN ↑"
 SH_THEME_PROMPT_VCS_BEHIND="$BOLD_MAGENTA ↓"
 
@@ -54,7 +54,7 @@ function command_prompt {
     if sh.scm.is_repository
     then
         PS1+="$GRAY"
-        PS1+="[$(sh.scm.branch_name)$(sh.scm.is_dirty)]"
+        PS1+="[$(sh.scm.branch_name) $(sh.scm.is_dirty)]"
         PS1+="$(sh.scm.is_ahead)$(sh.scm.is_behind)"
     fi
 
