@@ -28,12 +28,12 @@
 
 if assert_eq $SYSTEM macos
 then
+    # Add Homebrew paths to $PATH and $MANPATH
+    export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+    export MANPATH="$MANPATH:/usr/local/share/man"
+
     if sh.system.command_exists brew
     then
-        # Add Homebrew paths to $PATH and $MANPATH
-        export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-        export MANPATH="$MANPATH:/usr/local/share/man"
-
         # Add some useful shortcuts as aliases
         alias buuc="brew update && brew upgrade && brew cleanup"
         alias brrc="rm -rf Library/Caches/Homebrew/"
