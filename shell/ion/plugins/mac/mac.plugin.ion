@@ -1,0 +1,17 @@
+### mac.plugin.ion ---                                        -*- mode: ion;  -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+#
+
+### Code:
+
+
+
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+export MANPATH="$MANPATH:/usr/local/share/man"

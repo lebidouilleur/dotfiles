@@ -1,0 +1,64 @@
+### ionrc ---                                                 -*- mode: ion;  -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+#
+
+### Code:
+
+
+
+# Path to Ion Shell dotfiles directory.
+let ISH_DIR:str = "{{ISH}}"
+
+
+# Set the name of the theme you want to use.
+# NOTE: - Officially supported themes can be found in `themes/' directory.
+#       - User custom themes should be added in `custom/themes/' directory.
+# If ISH_THEME is set to `default' then no theme will be used and raw bash shell
+# will be displaying.  If `ISH_THEME' is set to `random' then a random theme will
+# be loaded at each startup.
+let ISH_THEME:str = "clear"
+
+
+# Set the plugins you want to use.
+# NOTE: - Officially supported plugins can be found in `plugins/' directory.
+#       - User custom plugins should be added in `custom/plugins/' directory.
+# Default: ISH_PLUGINS=[ mac ]
+let ISH_PLUGINS = [ mac ]
+
+
+# Set the current version of these dotfiles.
+let ISH_VERSION:float = 0.1
+
+
+# Set the minimum version of Ion Shell required to run these dotfiles.
+let ISH_MINIMUM_VERSION:float = 1.0
+
+
+# Set the following variable to `true' if you want to enable logging and debugging.
+let ENABLE_DEBUGGING:bool = false
+
+
+# A minimal and standard PATH.
+export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
+
+
+# Path to man pages.
+export MANPATH="/usr/local/man:/usr/share/man"
+
+
+# Default compilation flags.
+export CHOST="{{UNAMEM}}-{{UNAMES}}"
+export CFLAGS="-march=native -mtune=native -Os -pipe -pedantic"
+export CXXFLAGS="${CFLAGS}"
+export MAKEOPTS="-j4"
+
+
+# Bootstrap ISH dotfiles setup!
+source $ISH_DIR/bootstrap.ion

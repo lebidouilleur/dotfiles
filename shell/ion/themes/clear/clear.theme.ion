@@ -1,0 +1,18 @@
+### clear.theme.ion ---                                       -*- mode: ion;  -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+#
+
+### Code:
+
+
+
+fn PROMPT
+    printf "${c::blue}${SWD}${c::reset}\n${c::green,bold}➜ ${c::reset}"
+end
