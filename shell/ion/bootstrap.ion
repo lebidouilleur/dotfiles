@@ -15,15 +15,23 @@
 
 # Check if plugins exist and load them.
 for plugin in @ISH_PLUGINS
-    if test -f $ISH_DIR/plugins/$plugin/$plugin.plugin.ion
+    if test -f $ISH_DIR/custom/plugins/$plugin/$plugin.plugin.ion
+        source $ISH_DIR/custom/plugins/$plugin/$plugin.plugin.ion
+    else if test -f $ISH_DIR/plugins/$plugin/$plugin.plugin.ion
         source $ISH_DIR/plugins/$plugin/$plugin.plugin.ion
+    else
+        echo "${c::redbg,black,bold} FAIL ${c::reset} ${c::red}No such plugin ${c::cyan}$plugin${c::reset}"
     end
 end
 
 
 # Load the theme specified by the user
 if test -n $ISH_THEME && test $ISH_THEME != "default"
-    if test -f $ISH_DIR/themes/$ISH_THEME/$ISH_THEME.theme.ion
+    if test -f $ISH_DIR/custom/themes/$ISH_THEME/$ISH_THEME.theme.ion
+        source $ISH_DIR/custom/themes/$ISH_THEME/$ISH_THEME.theme.ion
+    else if test -f $ISH_DIR/themes/$ISH_THEME/$ISH_THEME.theme.ion
         source $ISH_DIR/themes/$ISH_THEME/$ISH_THEME.theme.ion
+    else
+        echo "${c::redbg,black,bold} FAIL ${c::reset} ${c::red}No such theme ${c::cyan}$ISH_THEME${c::reset}"
     end
 end
