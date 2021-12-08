@@ -13,5 +13,23 @@
 
 
 
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-export MANPATH="$MANPATH:/usr/local/share/man"
+if test $SYSTEM == macos
+    if exists -f "/usr/local/bin/brew"
+        # Add Homebrew paths to $PATH and $MANPATH
+        export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+        export MANPATH="$MANPATH:/usr/local/share/man"
+
+    end
+
+
+    if exists -d "/Applications/Xcode.app/"
+        # Add XCode toolchain manuals path to $MANPATH
+        export MANPATH="$MANPATH:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/man"
+    end
+
+
+    if exists -d "/Library/TeX/"
+        # Add MacTeX utilities to $PATH when installed
+        export PATH="$PATH:/Library/TeX/texbin"
+    end
+end

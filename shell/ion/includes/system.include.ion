@@ -1,0 +1,27 @@
+### system.include.ion ---                                    -*- mode: ion;  -*-
+
+## Copyright (C) 2021  lebidoulleur
+
+## Author: lebidoulleur <lebidoulleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+#
+
+### Code:
+
+
+
+match $(uname -s)
+    case "AIX";        export SYSTEM=aix
+    case "Darwin";     export SYSTEM=macos
+    case "DragonFly";  export SYSTEM=dragonfly
+    case "FreeBSD";    export SYSTEM=freebsd
+    case "GNU";        export SYSTEM=GNU
+    case "Haiku";      export SYSTEM=haiku
+    case "Linux";      export SYSTEM=linux
+    case "NetBSD";     export SYSTEM=netbsd
+    case "OpenBSD";    export SYSTEM=openbsd
+    case "Windows_NT"; export SYSTEM=windows
+end
