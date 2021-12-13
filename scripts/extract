@@ -51,42 +51,42 @@ do
     if [ -f "$1" ]
     then
         case "$1" in
-            *.tar)                   tar x${verbose}f         "$1" ;;
-            *.tar.bz2|*.tbz|*.tbz2)  tar x${verbose}jf        "$1" ;;
-            *.tar.gz|*.tgz)          tar x${verbose}zf        "$1" ;;
-            *.tar.xz|*.txz)          tar --xz -x${verbose}f   "$1" ;;
-            *.tar.zma|*.tlz)         tar --lzma -x${verbose}f "$1" ;;
-            *.bz2)                   bunzip2                  "$1" ;;
-            *.gz)                    gunzip                   "$1" ;;
-            *.xz)                    unxz                     "$1" ;;
-            *.lzma)                  unlzma                   "$1" ;;
-            *.7z)                    7za x                    "$1" ;;
-            *.Z)                     uncompress               "$1" ;;
-            *.zip)                   unzip ${zipverbose} "$1" -d .tmp &&
-                                        mkdir "${1%.*}"     &&
-                                        mv .tmp/* "${1%.*}" &&
-                                        rm -rf .tmp
-                                     ;;
-            *.xpi|*.ipsw)            unzip ${zipverbose} "$1" -d .tmp &&
-                                        mkdir "${1%.*}"     &&
-                                        mv .tmp/* "${1%.*}" &&
-                                        rm -rf .tmp
-                                     ;;
-            *.jar|*.apk)             unzip ${zipverbose} "$1" -d .tmp &&
-                                        mkdir "${1%.*}"     &&
-                                        mv .tmp/* "${1%.*}" &&
-                                        rm -rf .tmp
-                                     ;;
+            *.tar)                  tar x${verbose}f         "$1" ;;
+            *.tar.bz2|*.tbz|*.tbz2) tar x${verbose}jf        "$1" ;;
+            *.tar.gz|*.tgz)         tar x${verbose}zf        "$1" ;;
+            *.tar.xz|*.txz)         tar --xz -x${verbose}f   "$1" ;;
+            *.tar.zma|*.tlz)        tar --lzma -x${verbose}f "$1" ;;
+            *.bz2)                  bunzip2                  "$1" ;;
+            *.gz)                   gunzip                   "$1" ;;
+            *.xz)                   unxz                     "$1" ;;
+            *.lzma)                 unlzma                   "$1" ;;
+            *.7z)                   7za x                    "$1" ;;
+            *.Z)                    uncompress               "$1" ;;
+            *.zip)                  unzip ${zipverbose} "$1" -d .tmp &&
+                                       mkdir "${1%.*}"     &&
+                                       mv .tmp/* "${1%.*}" &&
+                                       rm -rf .tmp
+                                    ;;
+            *.xpi|*.ipsw)           unzip ${zipverbose} "$1" -d .tmp &&
+                                       mkdir "${1%.*}"     &&
+                                       mv .tmp/* "${1%.*}" &&
+                                       rm -rf .tmp
+                                    ;;
+            *.jar|*.apk)            unzip ${zipverbose} "$1" -d .tmp &&
+                                       mkdir "${1%.*}"     &&
+                                       mv .tmp/* "${1%.*}" &&
+                                       rm -rf .tmp
+                                    ;;
             *.cbz)                  unzip ${zipverbose} "$1" -d .tmp &&
-                                        mkdir "${1%.*}"     &&
-                                        mv .tmp/* "${1%.*}" &&
-                                        rm -rf .tmp
+                                       mkdir "${1%.*}"     &&
+                                       mv .tmp/* "${1%.*}" &&
+                                       rm -rf .tmp
                                     ;;
             *.cbr)                  unrar x -id${rarverbose} -ad "$1" ;;
             *.rar)                  unrar x -id${rarverbose} -ad "$1" ;;
-            *.deb)                   dpkg-deb -x${verbose} "$1" "${1%.*}" ;;
-            *.rpm)                   rpm2cpio "$1" | cpio -idm${verbose} ;;
-            *.pkg)                   pkgutil --expand "$1" "${1%.*}" ;;
+            *.deb)                  dpkg-deb -x${verbose} "$1" "${1%.*}" ;;
+            *.rpm)                  rpm2cpio "$1" | cpio -idm${verbose} ;;
+            *.pkg)                  pkgutil --expand "$1" "${1%.*}" ;;
 
             *) echo "extract: $1: cannot be extracted via extract" ;;
         esac
