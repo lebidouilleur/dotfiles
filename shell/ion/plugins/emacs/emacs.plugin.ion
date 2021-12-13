@@ -1,0 +1,31 @@
+### emacs.plugin.ion ---                                       -*- mode: ion; -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+##
+
+### Code:
+
+
+
+let DOOM_EMACS_PATH="${HOME}/.emacs.d/bin"
+let DOOM_EMACS_EXEC="${DOOM_EMACS_PATH}/doom"
+
+
+
+
+
+if test $SYSTEM == macos
+    export PATH="/Applications/Emacs/Contents/MacOS/:$PATH"
+end
+
+
+
+if exists -f $DOOM_EMACS_EXEC
+    export PATH="$PATH:${DOOM_EMACS_PATH}"
+end
