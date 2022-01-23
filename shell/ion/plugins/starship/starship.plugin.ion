@@ -1,0 +1,16 @@
+### starship.plugin.ion ---                                    -*- mode: ion; -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+##
+
+### Code:
+
+
+
+eval $(starship init ion)
