@@ -30,7 +30,7 @@ print_usage() {
     printf "Usage: ctex <commands> [optionals]...\n"
     printf "    commands:\n"
     printf "        ${RED}install${RESET}            install context executables and environment\n"
-    printf "        ${RED}uninstall${RESET}          uninstall context and associated files (including (Google) Fonts)\n"
+    printf "        ${RED}uninstall${RESET}          uninstall context and associated files\n"
     printf "        ${RED}update${RESET}             update context executables and environment\n"
     printf "\n"
     printf "        ${RED}font${RESET} ${CYAN}[font]${RESET}        install the given font from CTAN\n"
@@ -157,12 +157,9 @@ install_ctan_fonts() {
 
 
 install_google_fonts() {
-    if [ "$OSTYPE" = "darwin*" ]
-    then
-       USER_FONTS_DIR="${HOME}/Library/Fonts"
-       GOOGLE_FONTS="Google Fonts"
-       GOOGLE_FONTS_DIR="${USER_FONTS_DIR}/${GOOGLE_FONTS}"
-    fi
+    USER_FONTS_DIR="${HOME}/Library/Fonts"
+    GOOGLE_FONTS="Google Fonts"
+    GOOGLE_FONTS_DIR="${USER_FONTS_DIR}/${GOOGLE_FONTS}"
 
     if [ ! -d "${GOOGLE_FONTS_DIR}" ]
     then
