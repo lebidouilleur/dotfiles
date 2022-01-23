@@ -1,0 +1,31 @@
+#!/usr/bin/env dash
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+##
+
+### Code:
+
+
+
+print_usage() {
+    echo "Usage: dl [option] <archives> ..."
+    echo "    options:"
+    echo "        -h  show this message and exit"
+    echo "        -v  verbosely list files processed"
+}
+
+
+if [ $# -gt 1 ]
+then
+    # NOTE: The final '-' tells aria2c to read urls from stdin
+    lynx -image_links -cache=0 -dump -listonly "$1" | grep -E ".*\.($2)$" | awk '{print $2}' | aria2c -i -
+else
+    print_usage
+    exit 1
+fi
