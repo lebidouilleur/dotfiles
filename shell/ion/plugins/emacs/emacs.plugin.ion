@@ -21,7 +21,11 @@ let DOOM_EMACS_EXEC="${DOOM_EMACS_PATH}/doom"
 
 
 if test $SYSTEM == macos
-    export PATH="/Applications/Emacs/Contents/MacOS/:$PATH"
+    if exists -d "~/Applications/Emacs/"
+        export PATH="~/Applications/Emacs/Contents/MacOS/:$PATH"
+    else if exists -d "/Applications/Emacs/"
+        export PATH="/Applications/Emacs/Contents/MacOS/:$PATH"
+    end
 end
 
 
