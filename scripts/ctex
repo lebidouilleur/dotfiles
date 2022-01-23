@@ -1,0 +1,254 @@
+#!/usr/bin/env dash
+
+## Copyright (C) 2022  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+##
+
+### Code:
+
+
+
+# No magic strings for reusability
+CONTEXT_INSTALL_DIR="${HOME}/.local/bin/context"
+CONTEXT_TEXMF_DIR="${CONTEXT_INSTALL_DIR}/tex/texmf"
+CONTEXT_FONTS_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-fonts"
+CONTEXT_MODULES_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-modules"
+
+
+# No magic colors
+RED="\033[1m\033[31m"
+CYAN="\033[36m"
+RESET="\033[0m"
+
+
+print_usage() {
+    printf "Usage: ctex <commands> [optionals]...\n"
+    printf "    commands:\n"
+    printf "        ${RED}install${RESET}            install context executables and environment\n"
+    printf "        ${RED}uninstall${RESET}          uninstall context and associated files (including (Google) Fonts)\n"
+    printf "        ${RED}update${RESET}             update context executables and environment\n"
+    printf "\n"
+    printf "        ${RED}font${RESET} ${CYAN}[font]${RESET}        install the given font from CTAN\n"
+    printf "        ${RED}font${RESET} ${CYAN}all${RESET}           install all fonts from CTAN\n"
+    printf "        ${RED}font${RESET} ${CYAN}google${RESET}        install all fonts from Google Fonts\n"
+    printf "\n"
+    printf "        ${RED}module${RESET} ${CYAN}[module]${RESET}    install the given module from CTAN\n"
+    printf "        ${RED}module${RESET} ${CYAN}all${RESET}         install all modules from CTAN\n"
+}
+
+
+
+# There is an issue if the user does not provide any argument
+if [ ${#} -eq 0 ]
+then
+    print_usage
+    exit 1
+fi
+
+
+
+
+# ===============================================================================
+
+
+
+
+install_context() {
+    echo "Installing ConTEXt in $CONTEXT_INSTALL_DIR..."
+
+    if [ ! -d "$CONTEXT_INSTALL_DIR" ]
+    then
+        mkdir -p "$CONTEXT_INSTALL_DIR"
+    else
+        echo "ConTEXt is already installed."
+        echo "Please use 'ctex update' to update your ConTEXt installation."
+        exit 1
+    fi
+
+    cd "$CONTEXT_INSTALL_DIR"
+
+    echo "Downloading ConTEXt installer..."
+    curl --silent http://lmtx.pragma-ade.nl/install-lmtx/context-osx-64.zip -o context-osx-64.zip
+
+    echo "Extracting ConTEXt installer..."
+    unzip -qq context-osx-64.zip
+
+    echo "Running ConTEXt installer..."
+    sh ./install.sh
+
+    if [ $? -eq 0 ]
+    then
+        echo "ConTEXt is fully installed!"
+    else
+        echo "ConTEXt installation failed..."
+        rm -rf "$CONTEXT_INSTALL_DIR"
+        exit 1
+    fi
+}
+
+
+
+
+update_context() {
+    echo "Updating ConTEXt in $CONTEXT_INSTALL_DIR..."
+
+    if [ ! -d "$CONTEXT_INSTALL_DIR" ]
+    then
+        echo "No ConTEXt installation found..."
+        echo "Please install ConTEXt first."
+        exit 1
+    fi
+
+    cd $CONTEXT_INSTALL_DIR
+    sh ./install.sh
+
+    if [ $? -eq 0 ]
+    then
+        echo "ConTEXt has been updated!"
+    else
+        echo "An error has occurred..."
+        echo "Retry the update..."
+        exit 1
+    fi
+}
+
+
+
+
+install_ctan_fonts() {
+    echo "Downloading CTAN fonts in $CONTEXT_FONTS_DIR..."
+
+    if [ ! -d "$CONTEXT_FONTS_DIR" ]
+    then
+        echo "Your ConTEXt installation has some issues..."
+        echo "Please fix these issues before installing fonts."
+    fi
+
+    cd "$CONTEXT_FONTS_DIR"
+
+    case "$1" in
+        all) dl http://mirrors.ctan.org/fonts zip ;;
+        *)   aria2c "http://mirrors.ctan.org/fonts/${1}.zip" ;;
+    esac
+
+    echo "Extract fonts..."
+    for font in *.zip
+    do
+        extract "$font"
+    done
+
+    read -p "Delete font archives? [y/N] " -r answer
+    if [ "$answer" != "${answer#[Yy]}" ]
+    then
+        rm -rf *.zip
+    fi
+
+    echo "Updating ConTEXt environment..."
+    mtxrun --generate
+    mtxrun --script font --reload
+}
+
+
+
+
+install_google_fonts() {
+    if [ "$OSTYPE" = "darwin*" ]
+    then
+       USER_FONTS_DIR="${HOME}/Library/Fonts"
+       GOOGLE_FONTS="Google Fonts"
+       GOOGLE_FONTS_DIR="${USER_FONTS_DIR}/${GOOGLE_FONTS}"
+    fi
+
+    if [ ! -d "${GOOGLE_FONTS_DIR}" ]
+    then
+        echo "Installing Google Fonts..."
+        git clone --depth 1 https://github.com/google/fonts.git "${GOOGLE_FONTS_DIR}"
+
+        if [ $? -eq 0 ]
+        then
+            echo "Google Fonts successfully installed!"
+            return 0
+        else
+            echo "Error while installing Google Fonts..."
+            rm -rf "${GOOGLE_FONTS_DIR}"
+            exit 1
+        fi
+    else
+        echo "Updating Google Fonts..."
+        cd "${GOOGLE_FONTS_DIR}"
+        git pull origin main
+
+        if [ $? -eq 0 ]
+        then
+            echo "Google Fonts successfully updated!"
+            return 0
+        else
+            echo "Error while updating Google Fonts..."
+            exit 1
+        fi
+    fi
+}
+
+
+
+
+install_third_modules() {
+    echo "Downloading CTAN fonts in $CONTEXT_MODULES_DIR..."
+
+    if [ ! -d "$CONTEXT_MODULES_DIR" ]
+    then
+        echo "Your ConTEXt installation has some issues..."
+        echo "Please fix these issues before installing third party modules."
+    fi
+
+    cd "$CONTEXT_MODULES_DIR"
+
+    case "$1" in
+        all) dl http://mirrors.ctan.org/macros/context/contrib zip ;;
+        *)   aria2c "http://mirrors.ctan.org/macros/context/contrib/${1}.zip" ;;
+    esac
+
+    echo "Extract modules..."
+    for module in *.zip
+    do
+        unzip -qq "$module"
+    done
+
+    echo "Installing modules..."
+    context --generate >/dev/null 2>&1
+
+    if [ $? -eq 0 ]
+    then
+        echo "Modules successfully installed!"
+    else
+        echo "Error while installing modules..."
+    fi
+
+    read -p "Delete module archives? [y/N] " -r answer
+    if [ "$answer" != "${answer#[Yy]}" ]
+    then
+        rm -rf *.zip
+    fi
+}
+
+
+
+if [ ${#} -ge 1 ]
+then
+    CURRENT_DIR=$(pwd)
+
+    case $1 in
+        install) install_context ;;
+        update)  update_context ;;
+        font)    [ "$2" = "google" ] && install_google_fonts || install_ctan_fonts "$2" ;;
+        module)  install_third_modules "$2" ;;
+    esac
+
+
+    cd $CURRENT_DIR
+fi
