@@ -1,0 +1,61 @@
+### screenrc ---                                             -*- mode: conf; -*-
+
+## Copyright (C) 2021  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+
+## You should have received a copy of the GNU General Public License
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+### Commentary:
+
+##
+
+### Code:
+
+
+
+# Use ctrl-<Spc> as escape key.
+escape "^  "
+
+# Do not prompt the Wellcome Message.
+startup_message off
+
+# Do not track mouse, it's annoying.
+mousetrack off
+
+# Use a small scroll for low memory usage.
+defscrollback 512
+
+# Set windows/panes base-index starts to 1
+bind c  screen 1
+bind ^c screen 1
+bind 0  select 10
+screen 1
+
+# Spliting bindings.
+bind - split
+bind | split -v
+
+# Better shortcut to quit.
+bind Q quit
+
+# Reload this configuration.
+bind r eval "source ~/.screenrc"
+
+# Set our terminal as 256color one.
+term xterm-256colors
+
+# the following two lines give a two-line status, with the current window highlighted
+hardstatus alwayslastline '%{= g}[%{G}%H%{g}][%= %{= w}%?%-Lw%?%{= R}%n*%f %t%?%{= R}(%u)%?%{= w}%+Lw%?%= %{= g}][%{B}%Y/%m/%d %{W}%c:%s%{g}]'
