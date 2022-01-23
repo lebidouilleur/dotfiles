@@ -240,10 +240,11 @@ then
     CURRENT_DIR=$(pwd)
 
     case $1 in
-        install) install_context ;;
-        update)  update_context ;;
-        font)    [ "$2" = "google" ] && install_google_fonts || install_ctan_fonts "$2" ;;
-        module)  install_third_modules "$2" ;;
+        install)   install_context ;;
+        uninstall) rm -rf "${CONTEXT_INSTALL_DIR}" ;;
+        update)    update_context ;;
+        font)      [ "$2" = "google" ] && install_google_fonts || install_ctan_fonts "$2" ;;
+        module)    install_third_modules "$2" ;;
     esac
 
 
