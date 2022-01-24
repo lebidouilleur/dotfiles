@@ -9,6 +9,9 @@
 
 ##
 
+### Includes:
+. library.sh
+
 ### Code:
 
 
@@ -17,30 +20,48 @@
 CONTEXT_INSTALL_DIR="${HOME}/.local/bin/context"
 CONTEXT_TEXMF_DIR="${CONTEXT_INSTALL_DIR}/tex/texmf"
 CONTEXT_FONTS_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-fonts"
-CONTEXT_MODULES_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-modules"
-
-
-# No magic colors
-RED="\033[1m\033[31m"
-CYAN="\033[36m"
-RESET="\033[0m"
 
 
 print_usage() {
     printf "Usage: ctex <commands> [optionals]...\n"
-    printf "    commands:\n"
-    printf "        ${RED}install${RESET}            install context executables and environment\n"
-    printf "        ${RED}uninstall${RESET}          uninstall context and associated files\n"
-    printf "        ${RED}update${RESET}             update context executables and environment\n"
+    printf "    ${TEXT_BOLD}commands${TEXT_RESET}:\n"
+    printf "        ${TEXT_FOREGROUND_RED}install${TEXT_RESET}            install context executables and environment\n"
+    printf "        ${TEXT_FOREGROUND_RED}uninstall${TEXT_RESET}          uninstall context and associated files\n"
+    printf "        ${TEXT_FOREGROUND_RED}update${TEXT_RESET}             update context executables and environment\n"
     printf "\n"
-    printf "        ${RED}font${RESET} ${CYAN}[font]${RESET}        install the given font from CTAN\n"
-    printf "        ${RED}font${RESET} ${CYAN}all${RESET}           install all fonts from CTAN\n"
-    printf "        ${RED}font${RESET} ${CYAN}google${RESET}        install all fonts from Google Fonts\n"
+    printf "        ${TEXT_FOREGROUND_RED}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[font]${TEXT_RESET}        install the given font from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_RED}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}           install all fonts from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_RED}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}google${TEXT_RESET}        install all fonts from Google Fonts\n"
     printf "\n"
-    printf "        ${RED}module${RESET} ${CYAN}[module]${RESET}    install the given module from CTAN\n"
-    printf "        ${RED}module${RESET} ${CYAN}all${RESET}         install all modules from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_RED}module${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[module]${TEXT_RESET}    install the given module from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_RED}module${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}         install all modules from CTAN\n"
 }
 
+
+print_log() {
+    if [ ${#} -eq 0 ]; then
+        echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: error: wrong number of arguments" >&2
+    elif [ ${#} -eq 1 ]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')]: ${1}"
+    else
+        header="${1}"
+        shift
+        case "${header}" in
+            error|err) printf "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${red}error${RESET}: ${@}\n" >&2 ;;
+            warning|warn) printf "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${yellow}warning${RESET}: ${@}\n" >&2 ;;
+        esac
+    fi
+}
+
+
+print_error() {
+    print_log "error" "${*}"
+}
+
+
+print_warning() {
+    print_log "warning" "${*}"
+}
 
 
 # There is an issue if the user does not provide any argument
@@ -59,33 +80,33 @@ fi
 
 
 install_context() {
-    echo "Installing ConTEXt in $CONTEXT_INSTALL_DIR..."
+    print_log "Installing ConTEXt in $CONTEXT_INSTALL_DIR..."
 
     if [ ! -d "$CONTEXT_INSTALL_DIR" ]
     then
         mkdir -p "$CONTEXT_INSTALL_DIR"
     else
-        echo "ConTEXt is already installed."
-        echo "Please use 'ctex update' to update your ConTEXt installation."
+        print_error "ConTEXt is already installed."
+        print_error "Please use 'ctex update' to update your ConTEXt installation."
         exit 1
     fi
 
     cd "$CONTEXT_INSTALL_DIR"
 
-    echo "Downloading ConTEXt installer..."
+    print_log "Downloading ConTEXt installer..."
     curl --silent http://lmtx.pragma-ade.nl/install-lmtx/context-osx-64.zip -o context-osx-64.zip
 
-    echo "Extracting ConTEXt installer..."
+    print_log "Extracting ConTEXt installer..."
     unzip -qq context-osx-64.zip
 
-    echo "Running ConTEXt installer..."
+    print_log "Running ConTEXt installer..."
     sh ./install.sh
 
     if [ $? -eq 0 ]
     then
-        echo "ConTEXt is fully installed!"
+        print_log "ConTEXt is fully installed!"
     else
-        echo "ConTEXt installation failed..."
+        print_log "ConTEXt installation failed..."
         rm -rf "$CONTEXT_INSTALL_DIR"
         exit 1
     fi
@@ -95,12 +116,12 @@ install_context() {
 
 
 update_context() {
-    echo "Updating ConTEXt in $CONTEXT_INSTALL_DIR..."
+    print_log "Updating ConTEXt in $CONTEXT_INSTALL_DIR..."
 
     if [ ! -d "$CONTEXT_INSTALL_DIR" ]
     then
-        echo "No ConTEXt installation found..."
-        echo "Please install ConTEXt first."
+        print_log "No ConTEXt installation found..."
+        print_log "Please install ConTEXt first."
         exit 1
     fi
 
@@ -109,10 +130,10 @@ update_context() {
 
     if [ $? -eq 0 ]
     then
-        echo "ConTEXt has been updated!"
+        print_log "ConTEXt has been updated!"
     else
-        echo "An error has occurred..."
-        echo "Retry the update..."
+        print_log "An error has occurred..."
+        print_log "Retry the update..."
         exit 1
     fi
 }
@@ -121,12 +142,12 @@ update_context() {
 
 
 install_ctan_fonts() {
-    echo "Downloading CTAN fonts in $CONTEXT_FONTS_DIR..."
+    print_log "Downloading CTAN fonts in $CONTEXT_FONTS_DIR..."
 
     if [ ! -d "$CONTEXT_FONTS_DIR" ]
     then
-        echo "Your ConTEXt installation has some issues..."
-        echo "Please fix these issues before installing fonts."
+        print_log "Your ConTEXt installation has some issues..."
+        print_log "Please fix these issues before installing fonts."
     fi
 
     cd "$CONTEXT_FONTS_DIR"
@@ -136,7 +157,7 @@ install_ctan_fonts() {
         *)   aria2c "http://mirrors.ctan.org/fonts/${1}.zip" ;;
     esac
 
-    echo "Extract fonts..."
+    print_log "Extract fonts..."
     for font in *.zip
     do
         extract "$font"
@@ -148,7 +169,7 @@ install_ctan_fonts() {
         rm -rf *.zip
     fi
 
-    echo "Updating ConTEXt environment..."
+    print_log "Updating ConTEXt environment..."
     mtxrun --generate
     mtxrun --script font --reload
 }
@@ -163,29 +184,29 @@ install_google_fonts() {
 
     if [ ! -d "${GOOGLE_FONTS_DIR}" ]
     then
-        echo "Installing Google Fonts..."
+        print_log "Installing Google Fonts..."
         git clone --depth 1 https://github.com/google/fonts.git "${GOOGLE_FONTS_DIR}"
 
         if [ $? -eq 0 ]
         then
-            echo "Google Fonts successfully installed!"
+            print_log "Google Fonts successfully installed!"
             return 0
         else
-            echo "Error while installing Google Fonts..."
+            print_log "Error while installing Google Fonts..."
             rm -rf "${GOOGLE_FONTS_DIR}"
             exit 1
         fi
     else
-        echo "Updating Google Fonts..."
+        print_log "Updating Google Fonts..."
         cd "${GOOGLE_FONTS_DIR}"
         git pull origin main
 
         if [ $? -eq 0 ]
         then
-            echo "Google Fonts successfully updated!"
+            print_log "Google Fonts successfully updated!"
             return 0
         else
-            echo "Error while updating Google Fonts..."
+            print_log "Error while updating Google Fonts..."
             exit 1
         fi
     fi
@@ -195,12 +216,12 @@ install_google_fonts() {
 
 
 install_third_modules() {
-    echo "Downloading CTAN fonts in $CONTEXT_MODULES_DIR..."
+    print_log "Downloading CTAN fonts in $CONTEXT_MODULES_DIR..."
 
     if [ ! -d "$CONTEXT_MODULES_DIR" ]
     then
-        echo "Your ConTEXt installation has some issues..."
-        echo "Please fix these issues before installing third party modules."
+        print_log "Your ConTEXt installation has some issues..."
+        print_log "Please fix these issues before installing third party modules."
     fi
 
     cd "$CONTEXT_MODULES_DIR"
@@ -210,20 +231,20 @@ install_third_modules() {
         *)   aria2c "http://mirrors.ctan.org/macros/context/contrib/${1}.zip" ;;
     esac
 
-    echo "Extract modules..."
+    print_log "Extract modules..."
     for module in *.zip
     do
         unzip -qq "$module"
     done
 
-    echo "Installing modules..."
+    print_log "Installing modules..."
     context --generate >/dev/null 2>&1
 
     if [ $? -eq 0 ]
     then
-        echo "Modules successfully installed!"
+        print_log "Modules successfully installed!"
     else
-        echo "Error while installing modules..."
+        print_log "Error while installing modules..."
     fi
 
     read -p "Delete module archives? [y/N] " -r answer
