@@ -26,7 +26,7 @@ print_usage() {
     printf "    commands:\n"
     printf "        ${TEXT_FOREGROUND_MAGENTA}install${TEXT_RESET}            install context executables and environment\n"
     printf "        ${TEXT_FOREGROUND_MAGENTA}uninstall${TEXT_RESET}          uninstall context and associated files\n"
-    printf "        ${TEXT_FOREGROUND_MAGENTA}update${TEXT_RESET}             update context executables and environment\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}upgrade${TEXT_RESET}            update context executables and environment\n"
     printf "\n"
     printf "        ${TEXT_FOREGROUND_MAGENTA}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[font]${TEXT_RESET}        install the given font from CTAN\n"
     printf "        ${TEXT_FOREGROUND_MAGENTA}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}           install all fonts from CTAN\n"
@@ -85,7 +85,7 @@ install_context() {
 
 
 
-update_context() {
+upgrade_context() {
     printf "Updating ConTeXt in $CONTEXT_INSTALL_DIR...\n"
 
     if [ ! -d "$CONTEXT_INSTALL_DIR" ]; then
@@ -106,10 +106,10 @@ update_context() {
         # Modules
         context --generate >/dev/null >&1
 
-        printf "ConTeXt has been updated!\n"
+        printf "ConTeXt has been upgraded!\n"
     else
         print_error "An error has occurred...\n"
-        print_error "Retry the update...\n"
+        print_error "Retry the upgrade...\n"
         exit 1
     fi
 }
@@ -228,7 +228,7 @@ if [ ${#} -ge 1 ]; then
     case $1 in
         install)   install_context ;;
         uninstall) rm -rf "${CONTEXT_INSTALL_DIR}" ;;
-        update)    update_context ;;
+        upgrade)   upgrade_context ;;
         font)      [ "$2" = "google" ] && install_google_fonts || install_ctan_fonts "$2" ;;
         module)    install_third_modules "$2" ;;
     esac
