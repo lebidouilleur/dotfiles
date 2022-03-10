@@ -18,19 +18,13 @@
 # assert ========================================================================
 # colors ========================================================================
 TEXT_RESET="\033[0m"
-
-
 TEXT_BOLD="\033[1m"
 TEXT_DIM="\033[2m"
 TEXT_UNDERLINE="\033[4m"
 TEXT_BLINK="\033[5m"
 TEXT_REVERSE="\033[7m"
 TEXT_HIDDEN="\033[8m"
-
-
 TEXT_DEFAULT="\033[39m"
-
-
 TEXT_FOREGROUND_BLACK="\033[30m"
 TEXT_FOREGROUND_RED="\033[31m"
 TEXT_FOREGROUND_GREEN="\033[32m"
@@ -47,8 +41,6 @@ TEXT_FOREGROUND_LIGHT_BLUE="\033[94m"
 TEXT_FOREGROUND_LIGHT_MAGENTA="\033[95m"
 TEXT_FOREGROUND_LIGHT_CYAN="\033[96m"
 TEXT_FOREGROUND_WHITE="\033[97m"
-
-
 TEXT_BACKGROUND_BLACK="\033[40m"
 TEXT_BACKGROUND_RED="\033[41m"
 TEXT_BACKGROUND_GREEN="\033[42m"
@@ -66,4 +58,30 @@ TEXT_BACKGROUND_LIGHT_MAGENTA="\033[105m"
 TEXT_BACKGROUND_LIGHT_CYAN="\033[106m"
 TEXT_BACKGROUND_WHITE="\033[107m"
 
+
+
 # logging =======================================================================
+printl() {
+    if [ ${#} -eq 0 ]; then
+        echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${TEXT_FOREGROUND_RED}error${TEXT_RESET}: wrong number of arguments" >&2
+    elif [ ${#} -eq 1 ]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')]: ${1}"
+    else
+        header="${1}"
+        shift
+        case "${header}" in
+            error|err)    printf "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${TEXT_FOREGROUND_RED}error${TEXT_RESET}: ${@}\n" >&2 ;;
+            warning|warn) printf "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${TEXT_FOREGROUND_YELLOW}warning${TEXT_RESET}: ${@}\n" >&2 ;;
+        esac
+    fi
+}
+
+
+print_error() {
+    printl "error" "${*}"
+}
+
+
+print_warning() {
+    printl "warning" "${*}"
+}
