@@ -15,7 +15,6 @@
 ### Code:
 
 
-
 # No magic strings for reusability
 CONTEXT_INSTALL_DIR="${HOME}/.local/bin/context"
 CONTEXT_TEXMF_DIR="${CONTEXT_INSTALL_DIR}/tex/texmf"
@@ -23,50 +22,23 @@ CONTEXT_FONTS_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-fonts"
 
 
 print_usage() {
-    printf "Usage: ctex <commands> [optionals]...\n"
-    printf "    ${TEXT_BOLD}commands${TEXT_RESET}:\n"
-    printf "        ${TEXT_FOREGROUND_RED}install${TEXT_RESET}            install context executables and environment\n"
-    printf "        ${TEXT_FOREGROUND_RED}uninstall${TEXT_RESET}          uninstall context and associated files\n"
-    printf "        ${TEXT_FOREGROUND_RED}update${TEXT_RESET}             update context executables and environment\n"
+    printf "Usage: ${TEXT_BOLD}ctex${TEXT_RESET} ${TEXT_UNDERLINE}<commands>${TEXT_RESET} [optionals]...\n"
+    printf "    commands:\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}install${TEXT_RESET}            install context executables and environment\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}uninstall${TEXT_RESET}          uninstall context and associated files\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}update${TEXT_RESET}             update context executables and environment\n"
     printf "\n"
-    printf "        ${TEXT_FOREGROUND_RED}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[font]${TEXT_RESET}        install the given font from CTAN\n"
-    printf "        ${TEXT_FOREGROUND_RED}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}           install all fonts from CTAN\n"
-    printf "        ${TEXT_FOREGROUND_RED}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}google${TEXT_RESET}        install all fonts from Google Fonts\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[font]${TEXT_RESET}        install the given font from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}           install all fonts from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}font${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}google${TEXT_RESET}        install all fonts from Google Fonts\n"
     printf "\n"
-    printf "        ${TEXT_FOREGROUND_RED}module${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[module]${TEXT_RESET}    install the given module from CTAN\n"
-    printf "        ${TEXT_FOREGROUND_RED}module${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}         install all modules from CTAN\n"
-}
-
-
-print_log() {
-    if [ ${#} -eq 0 ]; then
-        echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: error: wrong number of arguments" >&2
-    elif [ ${#} -eq 1 ]; then
-        echo "[$(date +'%Y-%m-%d %H:%M:%S')]: ${1}"
-    else
-        header="${1}"
-        shift
-        case "${header}" in
-            error|err) printf "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${red}error${RESET}: ${@}\n" >&2 ;;
-            warning|warn) printf "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${yellow}warning${RESET}: ${@}\n" >&2 ;;
-        esac
-    fi
-}
-
-
-print_error() {
-    print_log "error" "${*}"
-}
-
-
-print_warning() {
-    print_log "warning" "${*}"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}module${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}[module]${TEXT_RESET}    install the given module from CTAN\n"
+    printf "        ${TEXT_FOREGROUND_MAGENTA}module${TEXT_RESET} ${TEXT_FOREGROUND_CYAN}all${TEXT_RESET}         install all modules from CTAN\n"
 }
 
 
 # There is an issue if the user does not provide any argument
-if [ ${#} -eq 0 ]
-then
+if [ ${#} -eq 0 ]; then
     print_usage
     exit 1
 fi
@@ -80,33 +52,31 @@ fi
 
 
 install_context() {
-    print_log "Installing ConTEXt in $CONTEXT_INSTALL_DIR..."
+    printf "Installing ConTeXt in $CONTEXT_INSTALL_DIR...\n"
 
-    if [ ! -d "$CONTEXT_INSTALL_DIR" ]
-    then
+    if [ ! -d "$CONTEXT_INSTALL_DIR" ]; then
         mkdir -p "$CONTEXT_INSTALL_DIR"
     else
-        print_error "ConTEXt is already installed."
-        print_error "Please use 'ctex update' to update your ConTEXt installation."
+        print_error "ConTeXt is already installed.\n"
+        print_error "Please use 'ctex update' to update your ConTeXt installation.\n"
         exit 1
     fi
 
     cd "$CONTEXT_INSTALL_DIR"
 
-    print_log "Downloading ConTEXt installer..."
+    printf "Downloading ConTeXt installer...\n"
     curl --silent http://lmtx.pragma-ade.nl/install-lmtx/context-osx-64.zip -o context-osx-64.zip
 
-    print_log "Extracting ConTEXt installer..."
+    printf "Extracting ConTeXt installer...\n"
     unzip -qq context-osx-64.zip
 
-    print_log "Running ConTEXt installer..."
-    sh ./install.sh
+    printf "Running ConTeXt installer...\n"
+    sh ./install.sh >/dev/null >&1
 
-    if [ $? -eq 0 ]
-    then
-        print_log "ConTEXt is fully installed!"
+    if [ $? -eq 0 ]; then
+        printf "ConTeXt is fully installed!\n"
     else
-        print_log "ConTEXt installation failed..."
+        print_error "ConTeXt installation failed...\n"
         rm -rf "$CONTEXT_INSTALL_DIR"
         exit 1
     fi
@@ -116,24 +86,30 @@ install_context() {
 
 
 update_context() {
-    print_log "Updating ConTEXt in $CONTEXT_INSTALL_DIR..."
+    printf "Updating ConTeXt in $CONTEXT_INSTALL_DIR...\n"
 
-    if [ ! -d "$CONTEXT_INSTALL_DIR" ]
-    then
-        print_log "No ConTEXt installation found..."
-        print_log "Please install ConTEXt first."
+    if [ ! -d "$CONTEXT_INSTALL_DIR" ]; then
+        print_error "No ConTeXt installation found...\n"
+        print_error "Please install ConTeXt first.\n"
         exit 1
     fi
 
     cd $CONTEXT_INSTALL_DIR
-    sh ./install.sh
+    sh ./install.sh >/dev/null >&1
 
-    if [ $? -eq 0 ]
-    then
-        print_log "ConTEXt has been updated!"
+    if [ $? -eq 0 ]; then
+        printf "Updating ConTeXt environment...\n"
+        # Fonts
+        mtxrun --generate >/dev/null >&1
+        mtxrun --script font --reload >/dev/null >&1
+
+        # Modules
+        context --generate >/dev/null >&1
+
+        printf "ConTeXt has been updated!\n"
     else
-        print_log "An error has occurred..."
-        print_log "Retry the update..."
+        print_error "An error has occurred...\n"
+        print_error "Retry the update...\n"
         exit 1
     fi
 }
@@ -142,12 +118,11 @@ update_context() {
 
 
 install_ctan_fonts() {
-    print_log "Downloading CTAN fonts in $CONTEXT_FONTS_DIR..."
+    printf "Downloading CTAN fonts in $CONTEXT_FONTS_DIR...\n"
 
-    if [ ! -d "$CONTEXT_FONTS_DIR" ]
-    then
-        print_log "Your ConTEXt installation has some issues..."
-        print_log "Please fix these issues before installing fonts."
+    if [ ! -d "$CONTEXT_FONTS_DIR" ]; then
+        printf "Your ConTeXt installation has some issues...\n"
+        printf "Please fix these issues before installing fonts.\n"
     fi
 
     cd "$CONTEXT_FONTS_DIR"
@@ -157,19 +132,17 @@ install_ctan_fonts() {
         *)   aria2c "http://mirrors.ctan.org/fonts/${1}.zip" ;;
     esac
 
-    print_log "Extract fonts..."
-    for font in *.zip
-    do
+    printf "Extract fonts...\n"
+    for font in *.zip; do
         extract "$font"
     done
 
     read -p "Delete font archives? [y/N] " -r answer
-    if [ "$answer" != "${answer#[Yy]}" ]
-    then
+    if [ "$answer" != "${answer#[Yy]}" ]; then
         rm -rf *.zip
     fi
 
-    print_log "Updating ConTEXt environment..."
+    printf "Updating ConTeXt environment...\n"
     mtxrun --generate
     mtxrun --script font --reload
 }
@@ -182,31 +155,28 @@ install_google_fonts() {
     GOOGLE_FONTS="Google Fonts"
     GOOGLE_FONTS_DIR="${USER_FONTS_DIR}/${GOOGLE_FONTS}"
 
-    if [ ! -d "${GOOGLE_FONTS_DIR}" ]
-    then
-        print_log "Installing Google Fonts..."
+    if [ ! -d "${GOOGLE_FONTS_DIR}" ]; then
+        printf "Installing Google Fonts...\n"
         git clone --depth 1 https://github.com/google/fonts.git "${GOOGLE_FONTS_DIR}"
 
-        if [ $? -eq 0 ]
-        then
-            print_log "Google Fonts successfully installed!"
+        if [ $? -eq 0 ]; then
+            printf "Google Fonts successfully installed!\n"
             return 0
         else
-            print_log "Error while installing Google Fonts..."
+            printf "Error while installing Google Fonts...\n"
             rm -rf "${GOOGLE_FONTS_DIR}"
             exit 1
         fi
     else
-        print_log "Updating Google Fonts..."
+        printf "Updating Google Fonts..."
         cd "${GOOGLE_FONTS_DIR}"
         git pull origin main
 
-        if [ $? -eq 0 ]
-        then
-            print_log "Google Fonts successfully updated!"
+        if [ $? -eq 0 ]; then
+            printf "Google Fonts successfully updated!\n"
             return 0
         else
-            print_log "Error while updating Google Fonts..."
+            printf "Error while updating Google Fonts...\n"
             exit 1
         fi
     fi
@@ -216,12 +186,11 @@ install_google_fonts() {
 
 
 install_third_modules() {
-    print_log "Downloading CTAN fonts in $CONTEXT_MODULES_DIR..."
+    printf "Downloading CTAN fonts in $CONTEXT_MODULES_DIR...\n"
 
-    if [ ! -d "$CONTEXT_MODULES_DIR" ]
-    then
-        print_log "Your ConTEXt installation has some issues..."
-        print_log "Please fix these issues before installing third party modules."
+    if [ ! -d "$CONTEXT_MODULES_DIR" ]; then
+        printf "Your ConTeXt installation has some issues...\n"
+        printf "Please fix these issues before installing third party modules.\n"
     fi
 
     cd "$CONTEXT_MODULES_DIR"
@@ -231,33 +200,29 @@ install_third_modules() {
         *)   aria2c "http://mirrors.ctan.org/macros/context/contrib/${1}.zip" ;;
     esac
 
-    print_log "Extract modules..."
-    for module in *.zip
-    do
+    printf "Extract modules...\n"
+    for module in *.zip; do
         unzip -qq "$module"
     done
 
-    print_log "Installing modules..."
+    printf "Installing modules...\n"
     context --generate >/dev/null 2>&1
 
-    if [ $? -eq 0 ]
-    then
-        print_log "Modules successfully installed!"
+    if [ $? -eq 0 ]; then
+        printf "Modules successfully installed!\n"
     else
-        print_log "Error while installing modules..."
+        printf "Error while installing modules...\n"
     fi
 
     read -p "Delete module archives? [y/N] " -r answer
-    if [ "$answer" != "${answer#[Yy]}" ]
-    then
+    if [ "$answer" != "${answer#[Yy]}" ]; then
         rm -rf *.zip
     fi
 }
 
 
 
-if [ ${#} -ge 1 ]
-then
+if [ ${#} -ge 1 ]; then
     CURRENT_DIR=$(pwd)
 
     case $1 in
