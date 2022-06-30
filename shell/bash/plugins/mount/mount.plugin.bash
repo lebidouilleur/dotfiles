@@ -28,7 +28,7 @@
 
 
 function ntfs-mount {
-    if ! sh.system.commands_required ntfs-3g
+    if ! commands_required ntfs-3g
     then
         echo "'ntfs-3g' is required..."
         return 1

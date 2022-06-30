@@ -20,40 +20,45 @@
 
 ### Commentary:
 
-#
+#  This project has as goal to be the lightest shell based on GNU/bash.
+#  For that purpose, we externalize as many as possible scripts and
+#  plugins as independant pieces of softwares
+#  (may they be dash/python/ruby/etc scripts or compiled softwares).
 
 ### Includes:
 
-source "$SH_DIR/assert.sh"
+source "$SH_DIR/μlib/μassert.sh"
+source "$SH_DIR/μlib/μcolors.sh"
+source "$SH_DIR/μlib/μdevtools.sh"
 
 ### Code:
 
 
 
-
-
-# See: https://unix.stackexchange.com/a/285928
+# HACK: https://unix.stackexchange.com/a/285928
 # Check if GNU/Bash version is >= $BASH_MINIMUM_VERSION.
-if assert_string_neq "$(printf '%s\n' "$BASH_MINIMUM_VERSION" "$BASH_VERSION" | sort -V | head -n1)" "$BASH_MINIMUM_VERSION"
+if assert_string_neq "$(printf '%s\n' "${BASH_MINIMUM_VERSION}" "${BASH_VERSION}" | sort -V | head -n1)" "${BASH_MINIMUM_VERSION}"
 then
     echo "Your are currently using GNU/Bash ${BASH_VERSION%.*}."
-    echo "Unfortunately, this dotfile config requires GNU/Bash $BASH_MINIMUM_VERSION or above."
-    echo "Consider to update GNU/Bash before using our dotfiles."
+    echo "Unfortunately, this dotfile configuration requires GNU/Bash $BASH_MINIMUM_VERSION or above."
+    echo "Consider to update GNU/Bash before using this configuration."
     return 1
 fi
 
 
 
 # Load all the *.lib.bash files in `lib/` to setup everything that may be needed.
-for lib in $(find "$SH_DIR/lib" -type f -name "*.lib.bash")
+for lib in $(find "${SH_DIR}/lib" -type f -name "*.lib.bash")
 do
-    [[ -f ${lib} ]] && source ${lib}
+    if assert_file_exists ${lib}
+    then
+        source ${lib}
+    fi
 done
 
 
-
-# Check if plugins exist and load them.  Custom plugins should be in `$SH_DIR/custom/plugins/`.
-for plugin in ${PLUGINS[*]}
+# Check if plugins exist and load them.
+for plugin in ${SH_PLUGINS[*]}
 do
     if assert_file_exists $SH_DIR/custom/plugins/${plugin}/${plugin}.plugin.bash
     then
@@ -77,21 +82,11 @@ done
 
 
 
-# Load the theme specified by the user
-if assert_string_not_empty $SH_THEME && assert_string_neq $SH_THEME "default"
+# Use `starship` as default shell prompt when installed.
+# When `starship` is not installed, use the ultra-simple `clear` theme.
+if command_exists starship
 then
-    if assert_eq $SH_THEME "random"
-    then
-        theme_list=($SH_DIR/themes/*.theme.bash)
-        selected_theme=${theme_list[((RANDOM%${#theme_list[@]}))]}
-        source $selected_theme
-    else
-        if assert_file_exists $SH_DIR/custom/themes/$SH_THEME.theme.bash
-        then
-            source $SH_DIR/custom/themes/$SH_THEME.theme.bash
-        elif assert_file_exists $SH_DIR/themes/$SH_THEME.theme.bash
-        then
-            source $SH_DIR/themes/$SH_THEME.theme.bash
-        fi
-    fi
+    eval "$(starship init bash)"
+else
+    source $SH_DIR/theme/clear.theme.bash
 fi

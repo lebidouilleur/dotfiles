@@ -1,8 +1,8 @@
-### systems.lib.bash ---                              -*- mode: shell-script; -*-
+### μdevtools.sh ---                                            -*- mode: sh; -*-
 
 ## Copyright (C) 2021  lebidouilleur
 
-## Author: lebidouilleur <lebouilleur@icloud.com>
+## Author: lebidouilleur <lebidouilleur@icloud.com>
 ## Keywords:
 
 ## This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,27 @@
 
 
 
+# Unless running interactively do not go any further.
+case $- in
+    *i*)        ;;
+      *) return ;;
+esac
+
+
+if [ "$ENABLE_DEBUGGING" = "true" ]
+then
+    echo $BASH_VERSION
+fi
+
+
+# Used variables must be initialized.
+# set -o nounset
+
+
+# Traces error in function & co.
+set -o errtrace
+
+
 # Use a simple SYSTEM variable to get rid of $OSTYPE
 case "$OSTYPE" in
     bsd*)     SYSTEM=bsd     ;;
@@ -42,3 +63,36 @@ case "$OSTYPE" in
 
     *)        SYSTEM=unknown ;;
 esac
+
+
+function command_exists {
+
+    # Although we should always be in `bash'
+    # let's use `type' which is POSIX compliant instead of `hash'
+    type $1 >/dev/null 2>&1 ;
+
+}
+
+
+function command_flag_exists {
+
+    # Check if flag $2 of a command $1 exists
+    # From https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/grep.zsh#L9
+    echo | $1 $2 "" >/dev/null 2>&1 ;
+
+}
+
+
+function commands_required {
+
+    # Check if commands in $@ exists.
+    for cmd in $@
+    do
+        if ! command_exists $cmd
+        then
+            required+=($cmd)
+        fi
+    done
+
+    (( ${#required[@]} > 0 )) && return 1 || return 0
+}

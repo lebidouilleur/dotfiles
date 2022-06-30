@@ -38,7 +38,7 @@ function sgen() {
         swift package init --type executable >/dev/null 2>&1
         swift package generate-xcodeproj >/dev/null 2>&1
 
-        cp "${SHDIR}/plugins/dev/swift.Makefile" "./makefile"
+        cp "${SH_DIR}/plugins/dev/swift.Makefile" "./makefile"
         gsed --in-place "s/APPNAME/${2}/g" "makefile"
 
         echo "Generate new swift application $2..."

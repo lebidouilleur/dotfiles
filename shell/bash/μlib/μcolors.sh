@@ -1,4 +1,4 @@
-### colors.lib.bash ---                              -*- mode: shell-script; -*-
+### μcolors.lib.bash ---                             -*- mode: shell-script; -*-
 
 ## Copyright (C) 2021  lebidouilleur
 

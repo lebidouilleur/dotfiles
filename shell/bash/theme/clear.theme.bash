@@ -34,14 +34,29 @@ BOLD_MAGENTA="$TEXT_FORMAT_BOLD$TEXT_FORMAT_FOREGROUND_LIGHT_MAGENTA"
 BOLD_GREEN="$TEXT_FORMAT_BOLD$TEXT_FORMAT_FOREGROUND_LIGHT_GREEN"
 BOLD_RED="$TEXT_FORMAT_BOLD$TEXT_FORMAT_FOREGROUND_LIGHT_RED"
 
-
-
-SH_THEME_PROMPT_VCS_DIRTY=" •"
-sH_THEME_PROMPT_VCS_CLEAN=""
-SH_THEME_PROMPT_VCS_AHEAD="$BOLD_CYAN ↑"
-SH_THEME_PROMPT_VCS_BEHIND="$BOLD_MAGENTA ↓"
-
 SH_THEME_PROMPT="➜ "
+
+
+# https://github.com/Bash-it/bash-it/blob/master/themes/base.theme.bash
+function safe_append_prompt_command {
+    local prompt_re
+
+    # Set OS dependent exact match regular expression.
+    case "${OSTYPE}" in
+        darwin*) prompt_re="[[:<:]]${1}[[:>:]]" ;; # macOS
+        *)       prompt_re="\<${1}\>"           ;; # Linux/FreeBSD/...
+    esac
+
+    if [[ ${PROMPT_COMMAND[*]:-} =~ ${prompt_re} ]]
+    then
+      return
+    elif [[ -z ${PROMPT_COMMAND} ]]
+    then
+      PROMPT_COMMAND="${1}"
+    else
+      PROMPT_COMMAND="${1};${PROMPT_COMMAND}"
+    fi
+}
 
 
 function command_prompt {
@@ -49,16 +64,7 @@ function command_prompt {
     # Store $? result before it get overrided by our functions
     result=$?
 
-    PS1="$BLUE\W "
-
-    if sh.scm.is_repository
-    then
-        PS1+="$GRAY"
-        PS1+="[$(sh.scm.branch_name)$(sh.scm.is_dirty)]"
-        PS1+="$(sh.scm.is_ahead)$(sh.scm.is_behind)"
-    fi
-
-    PS1+="$RESET\n"
+    PS1="$BLUE\W$RESET\n"
 
     (( $result == 0 )) && PS1+="$BOLD_GREEN$SH_THEME_PROMPT" \
                        || PS1+="$BOLD_RED$SH_THEME_PROMPT"
@@ -67,4 +73,4 @@ function command_prompt {
 }
 
 
-sh.cli.themes.safe_append_prompt_command command_prompt
+safe_append_prompt_command command_prompt

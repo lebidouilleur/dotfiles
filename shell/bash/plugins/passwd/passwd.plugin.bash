@@ -31,10 +31,10 @@ function generate_password {
     # Use `pwgen' or `apg' as default for better password generation.
     if (assert_string_not_empty "$1" && assert_geq "$1" 0)
     then
-        if sh.system.command_exists pwgen
+        if command_exists pwgen
         then
             password=$(pwgen -s -N 1 -cny $1)
-        elif sh.system.command_exists apg
+        elif command_exists apg
         then
             password=$(apg -m $1 -x 1 -M SNCL -a 1 -n 1);
         else

@@ -1,4 +1,4 @@
-### assert.sh ---                                               -*- mode: sh; -*-
+### μassert.sh ---                                              -*- mode: sh; -*-
 
 ## Copyright (C) 2021  lebidouilleur
 
@@ -102,7 +102,7 @@ function assert_writable {
 
 # Usage:
 # declare -a firstArray  = ('a' 'b' 'c')
-# declare -a secondArray = ('a' 'b' 'c') 
+# declare -a secondArray = ('a' 'b' 'c')
 # assert_array_eq firstArray[@] secondArray[@]
 function assert_array_eq {
   declare -a first=(${!1})
@@ -125,7 +125,7 @@ function assert_array_eq {
 
 # Usage:
 # declare -a firstArray  = ('a' 'b' 'c')
-# declare -a secondArray = ('a' 'b' 'c') 
+# declare -a secondArray = ('a' 'b' 'c')
 # assert_array_neq firstArray[@] secondArray[@]
 function assert_array_neq {
   ! assert_array_eq $1[@] $2[@]

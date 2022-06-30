@@ -28,7 +28,7 @@
 
 # A git repository is a git work-tree directory with AT LEAST one commit.
 function sh.scm.is_repository {
-    if sh.system.command_exists git
+    if command_exists git
     then
         [[ -n "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" ]] && \
         [[ -n "$(command git rev-parse --short HEAD 2>/dev/null)" ]]

@@ -34,11 +34,11 @@ then
 
     case $SYSTEM in
         macos) # NOTE: On macOS, using `exa` or `gls' (from `coreutils`) require to load Homebrew BEFORE this script.
-            if sh.system.command_exists exa
+            if command_exists exa
             then
                alias ls="exa      --color=auto --icons --group-directories-first"
                alias la="exa -ahl --color=auto --icons --group-directories-first"
-            elif sh.system.command_exists gls
+            elif command_exists gls
             then
                 alias ls='gls -GhvX --group-directories-first --color=tty'
             else

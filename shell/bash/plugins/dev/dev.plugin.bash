@@ -29,14 +29,17 @@
 
 # Add linked directory for personnal projects to PATH
 export PATH="${HOME}/.bin/local/:$PATH"
-
+export PATH="${HOME}/.local/binaries:$PATH"
+export PATH="${HOME}/.local/scripts:$PATH"
+export PATH="${HOME}/Library/Python/3.9/bin/:$PATH"
 
 
 # Add Bash configuration for each languages plugins are available
-source $SHDIR/plugins/dev/cc.plugin.bash
-source $SHDIR/plugins/dev/java.plugin.bash
-source $SHDIR/plugins/dev/ruby.plugin.bash
-source $SHDIR/plugins/dev/swift.plugin.bash
+source $SH_DIR/plugins/dev/cc.plugin.bash
+source $SH_DIR/plugins/dev/dotnet.plugin.bash
+source $SH_DIR/plugins/dev/java.plugin.bash
+source $SH_DIR/plugins/dev/ruby.plugin.bash
+source $SH_DIR/plugins/dev/swift.plugin.bash
 
 
 # Get a word in a list to generate a random project name.

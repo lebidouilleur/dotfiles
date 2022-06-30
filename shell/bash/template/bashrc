@@ -30,15 +30,6 @@
 export SH_DIR="{{BASH}}"
 
 
-# Set the name of the theme you want to use.
-# NOTE: - Officially supported themes can be found in `themes/' directory.
-#       - User custom themes should be added in `custom/themes/' directory.
-# If SH_THEME is set to `default' then no theme will be used and raw bash shell
-# will be displaying.  If `SH_THEME' is set to `random' then a random theme will
-# be loaded at each startup.
-export SH_THEME="default"
-
-
 # Set the plugins you want to use.
 # NOTE: - Officially supported plugins can be found in `plugins/' directory.
 #       - User custom plugins should be added in `custom/plugins/' directory.
@@ -47,11 +38,11 @@ export SH_PLUGINS=(base64 extract man)
 
 
 # Set the current version of these dotfiles.
-export SH_VERSION=1.0-dev
+export SH_VERSION=2.0-dev
 
 
 # Set the minimum version of GNU/Bash required to run these dotfiles.
-export BASH_MINIMUM_VERSION=5.0.0
+export BASH_MINIMUM_VERSION=5.1.0
 
 
 # Enable daily checks for update.  Set to `false` to disable.
@@ -66,18 +57,12 @@ export ENABLE_UPDATE_WITHOUT_PROMPT="true"
 export ENABLE_LS_COLORS="true"
 
 
-# Enable colors in `grep' output. Set to `false` to disable.
+# Enable colors in `grep' output.  Set to `false` to disable.
 export ENABLE_GREP_COLORS="true"
 
 
-# Set the following variable to `true' if you want to enable marking untracked
-# files under VCS as dirty.  This makes status check faster for large
-# repositories.
-export ENABLE_UNTRACKED_FILES_AS_DIRTY="false"
-
-
-# Set the following variable to `true' if you want to enable logging and debugging.
-export ENABLE_DEBUGGING="false"
+# Enable colors in `man' pages.  Set to `false` to disable.
+export ENABLE_MAN_COLORS="true"
 
 
 # In case language environement need to be manually set.

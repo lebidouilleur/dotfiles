@@ -36,7 +36,7 @@ function colorize-man-pages {
         LESS_TERMCAP_so=$(printf $TEXT_FORMAT_NOESC_BACKGROUND_LIGHT_GRAY$TEXT_FORMAT_NOESC_FOREGROUND_BLACK) \
         LESS_TERMCAP_ue=$(printf $TEXT_FORMAT_NOESC_RESET) \
         LESS_TERMCAP_us=$(printf $TEXT_FORMAT_NOESC_BOLD$TEXT_FORMAT_NOESC_FOREGROUND_RED) \
-        PAGER="less" \
+        PAGER="bat" \
         _NROFF_U=1 \
         man "$@"
 }

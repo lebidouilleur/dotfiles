@@ -46,4 +46,4 @@ else
 	@sed --in-place "s/{{UNAMEM}}/$(shell uname -m)/g" "${HOME}/.bashrc"
 	@sed --in-place "s/{{UNAMES}}/$(shell uname -s)/g" "${HOME}/.bashrc"
 endif
-	@echo "Installtion finished!"
+	@echo "Installation finished!"
