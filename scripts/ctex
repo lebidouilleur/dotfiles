@@ -19,6 +19,7 @@
 CONTEXT_INSTALL_DIR="${HOME}/.local/bin/context"
 CONTEXT_TEXMF_DIR="${CONTEXT_INSTALL_DIR}/tex/texmf"
 CONTEXT_FONTS_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-fonts"
+CONTEXT_MODULES_DIR="$CONTEXT_INSTALL_DIR/tex/texmf-modules"
 
 
 print_usage() {
@@ -186,38 +187,13 @@ install_google_fonts() {
 
 
 install_third_modules() {
-    printf "Downloading CTAN fonts in $CONTEXT_MODULES_DIR...\n"
+    cd $CONTEXT_INSTALL_DIR
 
-    if [ ! -d "$CONTEXT_MODULES_DIR" ]; then
-        printf "Your ConTeXt installation has some issues...\n"
-        printf "Please fix these issues before installing third party modules.\n"
-    fi
-
-    cd "$CONTEXT_MODULES_DIR"
-
-    case "$1" in
-        all) dl http://mirrors.ctan.org/macros/context/contrib zip ;;
-        *)   aria2c "http://mirrors.ctan.org/macros/context/contrib/${1}.zip" ;;
-    esac
-
-    printf "Extract modules...\n"
-    for module in *.zip; do
-        unzip -qq "$module"
-    done
-
-    printf "Installing modules...\n"
-    context --generate >/dev/null 2>&1
-
-    if [ $? -eq 0 ]; then
-        printf "Modules successfully installed!\n"
-    else
-        printf "Error while installing modules...\n"
-    fi
-
-    read -p "Delete module archives? [y/N] " -r answer
-    if [ "$answer" != "${answer#[Yy]}" ]; then
-        rm -rf *.zip
-    fi
+    rsync -rltv --del rsync://contextgarden.net/minimals/current/modules/ modules
+    rsync -rlt --exclude=/VERSION --del modules/*/ tex/texmf-modules
+    #rm -rf modules
+    mtxrun --generate
+    mtxrun --script font --reload
 }
 
 
@@ -230,7 +206,8 @@ if [ ${#} -ge 1 ]; then
         uninstall) rm -rf "${CONTEXT_INSTALL_DIR}" ;;
         upgrade)   upgrade_context ;;
         font)      [ "$2" = "google" ] && install_google_fonts || install_ctan_fonts "$2" ;;
-        module)    install_third_modules "$2" ;;
+        module)    install_third_modules ;;
+        help)      print_usage ;;
     esac
 
 
