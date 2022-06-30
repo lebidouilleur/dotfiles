@@ -1,0 +1,88 @@
+#!/usr/bin/env dash
+
+## Copyright (C) 2022  lebidouilleur
+
+## Author: lebidouilleur <lebidouilleur@icloud.com>
+## Keywords:
+
+### Commentary:
+
+## This strage script existance is due to the fact that
+## on some files, `djvu2pdf` is unable to perform the
+## conversion.
+
+### Includes:
+. library.sh
+
+### Code:
+
+
+
+
+print_usage() {
+    printf "Usage: ${TEXT_BOLD}compress_pdf${TEXT_RESET} ${TEXT_FOREGROUND_LIGHT_GRAY}[flags]${TEXT_RESET} ${TEXT_UNDERLINE}<files>${TEXT_RESET}...\n"
+    printf "    flags:\n"
+    printf "        -${TEXT_FOREGROUND_MAGENTA}h${TEXT_RESET}    show this help and exit\n"
+    printf "        -${TEXT_FOREGROUND_MAGENTA}v${TEXT_RESET}    enable verbose mode\n"
+}
+
+
+# Define global variable for un/quiet convertion
+verbose="false"
+
+
+# There is an issue if the user does not provide any argument
+if [ ${#} -eq 0 ]
+then
+    print_usage
+    exit 1
+fi
+
+
+# Check for arguments
+while getopts ":hv" options
+do
+    case $options in
+        v)   verbose="true" ;;
+        h|?) print_usage ; exit 1 ;;
+    esac
+done ; shift $((OPTIND-1))
+
+
+# Finaly extracting archives
+total=${#}
+counter=1
+while [ ${#} -gt 0 ]
+do
+    if [ -f "$1" ]
+    then
+        if [ "${1##*.}" = "pdf" ]
+        then
+            filepath="$1"
+            newpath="${filepath%.*}-compressed.pdf"
+
+            perc=$(printf "%.0f" $(echo "scale=3; $counter/$total*100" | bc))
+
+            if [ "$verbose" = "true" ]
+            then
+                printf "\033[K ${TEXT_BACKGROUND_CYAN}${TEXT_BOLD} $counter/$total:$perc%% ${TEXT_RESET}"
+                printf " ${TEXT_BOLD}compress_pdf${TEXT_RESET}: compressing '$filepath' -> '$newpath'...\r"
+            fi
+
+            gs -sDEVICE=pdfwrite -dPDFSETTINGS=/printer -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$newpath" "$filepath"
+
+            if [ "$verbose" = "true" ]
+            then
+                printf "\033[K ${TEXT_BACKGROUND_GREEN}${TEXT_BOLD} $counter/$total ${TEXT_RESET}"
+                printf " ${TEXT_BOLD}compress_pdf${TEXT_RESET}: compressing '$filepath' -> '$newpath'...\n"
+            fi
+
+            counter=$((counter+1))
+        else
+        printf "${TEXT_BOLD}compress_pdf${TEXT_RESET}}: ${TEXT_UNDERLINE}$1${TEXT_RESET}: unsupported format..."
+        fi
+    else
+        printf "${TEXT_BOLD}compress_pdf${TEXT_RESET}: ${TEXT_UNDERLINE}$1${TEXT_RESET}: no such file"
+    fi
+    shift
+done
