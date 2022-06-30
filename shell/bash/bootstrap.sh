@@ -46,17 +46,6 @@ then
 fi
 
 
-
-# Load all the *.lib.bash files in `lib/` to setup everything that may be needed.
-for lib in $(find "${SH_DIR}/lib" -type f -name "*.lib.bash")
-do
-    if assert_file_exists ${lib}
-    then
-        source ${lib}
-    fi
-done
-
-
 # Check if plugins exist and load them.
 for plugin in ${SH_PLUGINS[*]}
 do
