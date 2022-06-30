@@ -47,7 +47,7 @@ then
             ;;
 
         linux) # NOTE: On GNU/Linux GNU `coreutils' should already be installed and will be default if `exa` is not.
-            if sh.system.command_exists exa
+            if command_exists exa
             then
                alias ls="exa      --color=auto --icons --group-directories-first"
                alias la="exa -ahl --color=auto --icons --group-directories-first"
@@ -57,11 +57,11 @@ then
             ;;
 
         freebsd) # NOTE: On FreeBSD, using `exa` or `gls' (from `coreutils`) require them to be installed.
-            if sh.system.command_exists exa
+            if command_exists exa
             then
                alias ls="exa      --color=auto --icons --group-directories-first"
                alias la="exa -ahl --color=auto --icons --group-directories-first"
-            elif sh.system.command_exists gls
+            elif command_exists gls
             then
                 alias ls='gls -GhvX --group-directories-first --color=tty'
             else
@@ -71,11 +71,11 @@ then
 
         netbsd) # NOTE: On NetBSD, using `exa` or `gls' (from `coreutils`) require them to be installed.
                 # Otherwise do not change anything since NetBSD `ls' does not support colors.
-            if sh.system.command_exists exa
+            if command_exists exa
             then
                alias ls="exa      --color=auto --icons --group-directories-first"
                alias la="exa -ahl --color=auto --icons --group-directories-first"
-            elif sh.system.command_exists gls
+            elif command_exists gls
             then
                 alias ls='gls -GhvX --group-directories-first --color=tty'
             fi
@@ -83,14 +83,14 @@ then
 
         openbsd) # NOTE: On OpenBSD, using `exa` or `gls' (from `coreutils`) require them to be installed.
                  # Otherwise, the default `colorls' has (obviously) colors and multibyte support, so it will be used.
-            if sh.system.command_exists exa
+            if command_exists exa
             then
                alias ls="exa      --color=auto --icons --group-directories-first"
                alias la="exa -ahl --color=auto --icons --group-directories-first"
-            elif sh.system.command_exists gls
+            elif command_exists gls
             then
                 alias ls='gls -GhvX --group-directories-first --color=tty'
-            elif sh.system.command_exists colorls
+            elif command_exists colorls
             then
                 alias ls='colorls -G'
             fi
@@ -110,10 +110,10 @@ then
 
 
     # use `ripgrep` as default when instaled.
-    if sh.system.command_exists rg
+    if command_exists rg
     then
         alias grep="rg"
-    elif sh.system.command_exists ggrep
+    elif command_exists ggrep
     then
         alias grep='ggrep --color=always'
     else
