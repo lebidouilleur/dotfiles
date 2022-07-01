@@ -58,6 +58,29 @@ then
    alias cp="gcp --no-clobber --recursive"
 fi
 
-alias chown='chown --preserve-root'
-alias chmod='chmod --preserve-root'
-alias chgrp='chgrp --preserve-root'
+if command_exists gchown
+then
+   # Use GNU/CoreUtils `chown' by default`
+   # chown {
+   #     Preserve files
+   # }
+   alias chown="gchown --preserve-root"
+fi
+
+if command_exists gchmod
+then
+   # Use GNU/CoreUtils `chmod' by default`
+   # chmod {
+   #     Preserve files
+   # }
+   alias chmod="gchmod --preserve-root"
+fi
+
+if command_exists gchgrp
+then
+   # Use GNU/CoreUtils `chgrp' by default`
+   # chgrp {
+   #     Preserve files
+   # }
+   alias chgrp="gchgrp --preserve-root"
+fi
